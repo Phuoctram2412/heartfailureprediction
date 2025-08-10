@@ -1,0 +1,38 @@
+<body>
+ <div class="login">
+	<h1>Boston House Price Prediction</h1>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predict')}}"method="post">
+      <input type="text" name="Age" placeholder="Age" required="required" /><br>
+    	<input type="text" name="Sex" placeholder="Sex" required="required" /><br>
+        <input type="text" name="RestingBP" placeholder="RestingBP" required="required" /><br>
+        <input type="text" name="Cholesterol" placeholder="Cholesterol" required="required" /><br>
+        <input type="text" name="FastingBS" placeholder="FastingBS" required="required" /><br>
+        <input type="text" name="MaxHR" placeholder="MaxHR" required="required" /><br>
+        <input type="text" name="ExerciseAngina" placeholder="ExerciseAngina" required="required" /><br>
+        <input type="text" name="Oldpeak" placeholder="Oldpeak" required="required" /><br>
+        <input type="text" name="ST_Slope" placeholder="ST_Slope" required="required" /><br>
+        <input type="text" name="HeartFailure" placeholder="HeartFailure" required="required" /><br>
+        <input type="text" name="Cholesterol_is_zero" placeholder="Cholesterol_is_zero" required="required" /><br>
+        <input type="text" name="ChestPainType_ASY" placeholder="ChestPainType_ASY" required="required" /><br>
+        <input type="text" name="ChestPainType_ATA" placeholder="ChestPainType_ATA" required="required" /><br>
+
+        <input type="text" name="ChestPainType_NAP" placeholder="ChestPainType_NAP" required="required" /><br>
+        <input type="text" name="ChestPainType_TA" placeholder="ChestPainType_TA" required="required" /><br>
+        <input type="text" name="RestingECG_LVH" placeholder="RestingECG_LVH" required="required" /><br>
+        <input type="text" name="RestingECG_ST" placeholder="RestingECG_ST" required="required" /><br>
+
+       
+
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </form>
+
+   <br>
+   <br>
+  
+   
+ </div>
+ {{prediction_text}}
+
+</body>
