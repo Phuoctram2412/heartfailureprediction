@@ -2,7 +2,7 @@
 
 # 💓 Heart Failure Prediction
 
-### A machine learning web application that predicts the likelihood of heart failure based on patient health data. Built with Python, Flask, and Machine Learning algorithms.
+### A machine learning web application that predicts the likelihood of heart failure based on patient health data. Built with Python, Streamlit, and Machine Learning algorithms.
 
 
 # 📌 Features
@@ -19,11 +19,9 @@
 # 🛠️ Tech Stack
 1. Python 3.10+
 
-2. Flask (Web Framework)
+2. Streamlit (Web Framework)
 
 3. Pandas, NumPy, Scikit-learn (Data & Machine Learning Algorithm)
-
-4. HTML, CSS, Bootstrap (Frontend)
 
 
 # 📋 Prerequisites
@@ -46,4 +44,4 @@
 
 ## 3️⃣ Run the App
 
-#### python app.py
+#### streamlit run app.py

@@ -1,59 +1,59 @@
-from flask import Flask, request, app, jsonify,url_for, render_template, redirect, flash, session
-from markupsafe import escape
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import joblib
+import streamlit as st
 
-app = Flask(__name__)
-
-# Load the model
+# Load your trained model
 model = joblib.load(open('final_model.pkl', 'rb'))
 
-@app.route('/')
+st.title("💓 Heart Failure Prediction App")
 
-def home():
-    return render_template('home.html')
+st.markdown("Fill out all the fields below to get a prediction.")
 
-@app.route('/predict_api', methods=['POST'])
+# --- Form Inputs ---
+age = st.number_input("Age", min_value=1, max_value=120, value=50)
+sex = st.selectbox("Sex", [("Male", 1), ("Female", 0)], format_func=lambda x: x[0])[1]
+resting_bp = st.number_input("Resting Blood Pressure", min_value=0, value=120)
+cholesterol = st.number_input("Cholesterol", min_value=0, value=200)
+fasting_bs = st.selectbox("Fasting Blood Sugar", [("> 120 mg/dl", 1), ("≤ 120 mg/dl", 0)], format_func=lambda x: x[0])[1]
+max_hr = st.number_input("Max Heart Rate", min_value=0, value=150)
+exercise_angina = st.selectbox("Exercise-Induced Angina", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
+oldpeak = st.number_input("Oldpeak (ST Depression)", step=0.1, value=1.0)
+st_slope = st.selectbox("ST Slope", [("Up", 2), ("Flat", 1), ("Down", 0)], format_func=lambda x: x[0])[1]
 
-def predict_api():
-    data = request.json['data']
-    print(data)
+# Hidden cholesterol_is_zero field
+cholesterol_is_zero = 0
 
-    # Convert incoming data to array
-    new_data = np.array(list(data.values())).reshape(1, -1)
+# Chest Pain Types
+chest_asy = st.selectbox("Chest Pain (ASY)", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
+chest_ata = st.selectbox("Chest Pain (ATA)", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
+chest_nap = st.selectbox("Chest Pain (NAP)", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
+chest_ta = st.selectbox("Chest Pain (TA)", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
 
-    # If your model did NOT use scaling during training, do not scale here
-    # new_data = scaler.transform(new_data)
+# Resting ECG
+ecg_lvh = st.selectbox("Resting ECG (LVH)", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
+ecg_normal = st.selectbox("Resting ECG (Normal)", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
+ecg_st = st.selectbox("Resting ECG (ST)", [("Yes", 1), ("No", 0)], format_func=lambda x: x[0])[1]
 
-    # Get probabilities (probability for class 1 is at index [:, 1])
-    y_proba = model.predict_proba(new_data)[:, 1]
+# --- Predict Button ---
+if st.button("Predict"):
+    # Order must match training dataset
+    features = np.array([
+        age, sex, resting_bp, cholesterol, fasting_bs, max_hr, exercise_angina,
+        oldpeak, st_slope, cholesterol_is_zero,
+        chest_asy, chest_ata, chest_nap, chest_ta,
+        ecg_lvh, ecg_normal, ecg_st
+    ]).reshape(1, -1)
 
-    # Apply custom threshold
+    # Predict probability
+    y_proba = model.predict_proba(features)[:, 1]
+
+    # Apply threshold
     y_pred = (y_proba >= 0.3).astype(int)
 
-    print(f"Probability: {y_proba[0]:.4f}")
-    print(f"Prediction: {y_pred[0]}")
-
-    return jsonify(int(y_pred[0]))
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = [float(x) for x in request.form.values()]
-    new_data = np.array(data).reshape(1,-1)
-    print(new_data)
-    # Get probabilities (probability for class 1 is at index [:, 1])
-    y_proba = model.predict_proba(new_data)[:, 1]
-
-    # Apply custom threshold
-    y_pred = (y_proba >= 0.3).astype(int)
-    if y_pred == 0:
-        y_pred = 'You dont have Heart Failure'
+    # Display result
+    if y_pred[0] == 0:
+        st.success(f"✅ You do NOT have Heart Failure risk (probability: {y_proba[0]:.2%})")
     else:
-        y_pred = 'You have Heart Failure'
-    return render_template('home.html', prediction_text = '{}'.format(y_pred))
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+        st.error(f"⚠️ You HAVE Heart Failure risk (probability: {y_proba[0]:.2%})")
