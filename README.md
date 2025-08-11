@@ -12,3 +12,7 @@ Create a new environment (not necessary but recommend)
 conda create -p venv python== 3.10 -y
 
 ``` -->
+
+💓 Heart Failure Prediction
+A machine learning web application that predicts the likelihood of heart failure based on patient health data.
+Built with Python, Flask, and Machine Learning algorithms.

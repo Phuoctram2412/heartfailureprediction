@@ -52,7 +52,7 @@ def predict():
         y_pred = 'You dont have Heart Failure'
     else:
         y_pred = 'You have Heart Failure'
-    return render_template('home.html', prediction_text = 'The result is {}'.format(y_pred))
+    return render_template('home.html', prediction_text = '{}'.format(y_pred))
 
 
 if __name__ == "__main__":
