@@ -48,7 +48,7 @@ if st.button("Predict"):
 
     # Predict probability
     y_proba = model.predict_proba(features)[:, 1]
-
+    print(y_proba)
     # Apply threshold
     y_pred = (y_proba >= 0.3).astype(int)
 
